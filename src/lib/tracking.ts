@@ -1,17 +1,19 @@
-type EventPayload = {
+export type EventPayload = {
   eventName: string;
-  metadata?: Record<string, unknown>;
+  metaData?: Record<string, unknown>;
+  path?: string;
+  timestamp?: string;
 };
 
-export function trackEvent({ eventName, metadata = {} }: EventPayload) {
+export function trackEvent({ eventName, metaData = {} }: EventPayload) {
   if (typeof window === "undefined") return;
 
   const existing = localStorage.getItem("seed_to_social_events");
-  const events = existing ? JSON.parse(existing) : [];
+  const events: EventPayload[] = existing ? JSON.parse(existing) : [];
 
   events.push({
     eventName,
-    metadata,
+    metaData,
     path: window.location.pathname,
     timestamp: new Date().toISOString(),
   });
@@ -19,9 +21,9 @@ export function trackEvent({ eventName, metadata = {} }: EventPayload) {
   localStorage.setItem("seed_to_social_events", JSON.stringify(events));
 }
 
-export function getEvents() {
+export function getEvents(): EventPayload[] {
   if (typeof window === "undefined") return [];
 
   const existing = localStorage.getItem("seed_to_social_events");
-  return existing ? JSON.parse(existing) : [];
+  return existing ? (JSON.parse(existing) as EventPayload[]) : [];
 }

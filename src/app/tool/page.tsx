@@ -21,13 +21,19 @@ export default function ToolPage() {
     const [output, setOutput] = useState<CampaignOutput | null>(null);
     const [loading, setLoading] = useState(false);
 
+    const [feedback, setFeedback] = useState<"yes" | "maybe" | "no" | null>(null);
+    const [feedbackNote, setFeedbackNote] = useState("");
+
     async function generateCampaign() {
         setLoading(true);
         setOutput(null);
 
         trackEvent({
           eventName: "generator_started",
-          metadata: { tone, platforms: selectedPlatforms },
+          metaData: {
+            tone,
+            platforms: selectedPlatforms,
+          },
         });
 
         const response = await fetch("/api/generate", {
@@ -40,7 +46,12 @@ export default function ToolPage() {
             }),
         });
 
-        const data = await response.json();
+        let data: { error?: string; output?: CampaignOutput } = {};
+        try {
+          data = (await response.json()) as { error?: string; output?: CampaignOutput };
+        } catch {
+          data = {};
+        }
 
         setLoading(false);
 
@@ -49,20 +60,46 @@ export default function ToolPage() {
             return;
         }
 
+        if (!data.output) {
+          alert("No campaign output was returned.");
+          return;
+        }
+
         setOutput(data.output);
         const warnings = validateCampaign(data.output);
         if (warnings.length > 0) {
             alert("Warnings:\n" + warnings.join("\n"));
             trackEvent({
               eventName: "generation_completed",
-              metadata: { tone, platforms: selectedPlatforms },
-            });        }
+              metaData: { tone, platforms: selectedPlatforms },
+            });        
+        }
+
+        trackEvent({
+          eventName: "generation_completed",
+          metaData: {
+            tone,
+            platforms: selectedPlatforms,
+          },
+        });
     }
 
     function togglePlatform(platform: Platform) {
         setSelectedPlatforms((current) =>
         current.includes(platform)? current.filter((p) => p !== platform) : [...current, platform]
         );
+    }
+
+    function submitFeedback(answer: "yes" | "maybe" | "no") {
+      setFeedback(answer);
+
+      trackEvent({
+        eventName: "feedback_submitted",
+        metaData: {
+          answer,
+          note: feedbackNote,
+        },
+      });
     }
 
     return (
@@ -208,10 +245,41 @@ export default function ToolPage() {
             ) : null}
 
             {output && (
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+                <h2 className="text-lg font-semibold">Quick feedback</h2>
+                <p className="mt-2 text-sm text-zinc-400">
+                  Was this useful enough that you would use it again?
+                </p>
+
+                <textarea
+                  value={feedbackNote}
+                  onChange={(e) => setFeedbackNote(e.target.value)}
+                  placeholder="Optional: what would make this better?"
+                  className="mt-4 min-h-24 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3 text-sm outline-none focus:border-zinc-400"
+                />
+
+                <div className="mt-4 flex gap-2">
+                  {(["yes", "maybe", "no"] as const).map((answer) => (
+                    <button
+                      key={answer}
+                      onClick={() => submitFeedback(answer)}
+                      className={`rounded-xl border px-4 py-2 text-sm capitalize ${
+                        feedback === answer
+                          ? "border-white bg-white text-black"
+                          : "border-zinc-700 text-zinc-300"
+                      }`}
+                    >
+                      {answer}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {output && (
                 <button
                 onClick={() => {
                   downloadCsv(output);
-                  trackEvent({ eventName: "csv_exported" });
+                  trackEvent({ eventName: "csv_exported" , metaData: { tone, platforms: selectedPlatforms } });
                 }}
                 className="w-full rounded-xl bg-emerald-400 px-4 py-3 font-medium text-black"
             >

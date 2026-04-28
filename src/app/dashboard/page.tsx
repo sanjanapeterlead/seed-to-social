@@ -1,17 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getEvents } from "@/src/lib/tracking";
-
-type TrackedEvent = {
-  eventName: string;
-  path: string;
-  timestamp: string;
-  metadata?: Record<string, unknown>;
-};
+import { getEvents, EventPayload } from "@/src/lib/tracking";
 
 export default function DashboardPage() {
-  const [events, setEvents] = useState<TrackedEvent[]>([]);
+  const [events, setEvents] = useState<EventPayload[]>([]);
 
   useEffect(() => {
     setEvents(getEvents());
@@ -26,6 +19,22 @@ export default function DashboardPage() {
 
   const completionRate = started ? Math.round((completed / started) * 100) : 0;
   const exportRate = completed ? Math.round((exported / completed) * 100) : 0;
+
+  const feedbackEvents = events.filter(
+    (event) => event.eventName === "feedback_submitted"
+  );
+
+  const yes = feedbackEvents.filter(
+    (event) => event.metaData?.answer === "yes"
+  ).length;
+
+  const maybe = feedbackEvents.filter(
+    (event) => event.metaData?.answer === "maybe"
+  ).length;
+
+  const no = feedbackEvents.filter(
+    (event) => event.metaData?.answer === "no"
+  ).length;
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
@@ -42,13 +51,18 @@ export default function DashboardPage() {
           <Metric title="Export rate" value={`${exportRate}%`} />
         </div>
 
+        <Metric title="Feedback responses" value={feedbackEvents.length} />
+        <Metric title="Yes" value={yes} />
+        <Metric title="Maybe" value={maybe} />
+        <Metric title="No" value={no} />
+
         <div className="mt-8 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
           <h2 className="mb-4 text-lg font-semibold">Recent events</h2>
           <div className="space-y-3">
             {events.slice().reverse().map((event, index) => (
               <div key={index} className="rounded-xl bg-zinc-950 p-3 text-sm">
                 <p className="font-medium">{event.eventName}</p>
-                <p className="text-zinc-500">{event.timestamp}</p>
+                <p className="text-zinc-500">{event.timestamp ?? "No timestamp"}</p>
               </div>
             ))}
           </div>

@@ -1,6 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect } from "react";
+import { trackEvent} from "@/src/lib/tracking";
+import { captureUtm} from "@/src/lib/utm";
 
 export default function Home() {
+
+  useEffect(()=>{
+    captureUtm();
+    trackEvent({eventName: "page_view", metaData: {page: "home"}})
+  }, []);
+
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       <section className="mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-6 py-20">
