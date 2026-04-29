@@ -100,6 +100,8 @@ export default function ToolPage() {
           note: feedbackNote,
         },
       });
+      alert("Thanks — feedback saved.");
+
     }
 
     return (
