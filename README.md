@@ -246,13 +246,6 @@ http://localhost:3000/?utm_source=instagram_story&utm_campaign=first_user_test
 ```
 
 ---
-
-## 📹 Demo
-
-(Add your demo video link here)
-
----
-
 ## 🧭 Future Improvements
 
 * A/B testing infrastructure
@@ -272,8 +265,7 @@ http://localhost:3000/?utm_source=instagram_story&utm_campaign=first_user_test
 
 ## 📌 Why This Project
 
-Built to align with the **Growth Engineering** mindset at Buffer:
-
+Built to align with the **Growth Engineering** mindset:
 * Ship fast
 * Measure everything
 * Learn from users
@@ -281,8 +273,3 @@ Built to align with the **Growth Engineering** mindset at Buffer:
 
 ---
 
-## 👋 Author
-
-(Your Name)
-
----
