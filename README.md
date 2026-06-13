@@ -192,8 +192,8 @@ This project demonstrates:
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/seed-to-social-growth-engine.git
-cd seed-to-social-growth-engine
+git clone https://github.com/sanjanapeterlead/seed-to-social.git
+cd seed-to-social
 ```
 
 ---
@@ -208,7 +208,9 @@ npm install
 
 ### 3. Setup environment variables
 
-Create `.env.local`:
+Copy `.env.example` to `.env.local` and fill in your Supabase credentials.
+
+Run `src/database/initial.sql` in your Supabase SQL editor before starting the app.
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url

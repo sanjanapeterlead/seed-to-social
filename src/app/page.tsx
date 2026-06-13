@@ -18,7 +18,7 @@ export default function Home() {
     <main className="min-h-screen bg-zinc-950 text-white">
       <section className="mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-6 py-20">
         <p className="mb-4 text-sm font-medium text-zinc-400">
-          Seed-to-Social Growth Engine
+          Seed-to-Social
         </p>
 
         <h1 className="max-w-4xl text-5xl font-bold tracking-tight md:text-7xl">
@@ -26,9 +26,8 @@ export default function Home() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg text-zinc-400">
-          A Buffer-aligned growth engineering project that combines content
-          generation, platform validation, CSV export, attribution tracking,
-          A/B testing, and conversion analytics.
+          A growth engineering project that combines content generation,
+          platform validation, CSV export, UTM attribution, and conversion analytics.
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
@@ -40,7 +39,7 @@ export default function Home() {
           </Link>
 
           <a
-            href="https://github.com/"
+            href="https://github.com/sanjanapeterlead/seed-to-social"
             className="rounded-xl border border-zinc-700 px-5 py-3 font-medium text-zinc-200"
           >
             View GitHub
@@ -51,7 +50,7 @@ export default function Home() {
           {[
             "AI content repurposing",
             "Growth tracking",
-            "A/B testing and analytics",
+            "UTM attribution and analytics",
           ].map((item) => (
             <div
               key={item}
